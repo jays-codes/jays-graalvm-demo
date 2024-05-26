@@ -84,7 +84,7 @@
 				<artifactId>native-maven-plugin</artifactId>
 				<configuration>
 					<buildArgs>
-						<buildArg>-H:-CheckToolchain</buildArg>
+						<buildArg>-H:-CheckToolchain -Ob</buildArg>
 					</buildArgs>
 					<metadataRepository>
 						<enabled>true</enabled>
@@ -92,6 +92,18 @@
 					</metadataRepository>
 				</configuration>
 			</plugin>
+			<!--
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.4.2</version>
+				<configuration>
+					<to>
+						<image>jaymenorca/${project.artifactId}:v5h2</image>
+					</to>
+				</configuration>
+			</plugin>
+			-->			
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -100,13 +112,12 @@
 						<name>jayslabs/${project.artifactId}:graalvm-1</name>
 						<builder>paketobuildpacks/builder:tiny</builder>
 						<env>
-							<path>target/accounts-0.0.1-SNAPSHOT.jar</path>
+							<path>target/accounts2-0.0.1-SNAPSHOT.jar</path>
 							<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
 						</env>
 					</image>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 
