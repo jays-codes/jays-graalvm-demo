@@ -40,6 +40,8 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>1.18.32</version>
+			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -56,6 +58,23 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!--
+		https://mvnrepository.com/artifact/org.graalvm.buildtools/graalvm-reachability-metadata -->
+		<dependency>
+			<groupId>org.graalvm.buildtools</groupId>
+			<artifactId>graalvm-reachability-metadata</artifactId>
+			<version>0.10.2</version>
+			<scope>runtime</scope>
+		</dependency>
+		<!--		
+		<dependency>
+			<groupId>org.graalvm.buildtools</groupId>
+			<artifactId>graalvm-reachability-metadata</artifactId>
+			<version>0.9.21</version>
+			<classifier>repository</classifier>
+			<type>zip</type>
+		</dependency>
+-->
 	</dependencies>
 
 	<build>
@@ -63,25 +82,31 @@
 			<plugin>
 				<groupId>org.graalvm.buildtools</groupId>
 				<artifactId>native-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>com.google.cloud.tools</groupId>
-				<artifactId>jib-maven-plugin</artifactId>
-				<version>3.4.2</version>
 				<configuration>
-					<to>
-						<image>jaymenorca/${project.artifactId}:graalvm-h2</image>
-					</to>
-				</configuration>
-			</plugin>			
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>21</source>
-					<target>21</target>
+					<buildArgs>
+						<buildArg>-H:-CheckToolchain</buildArg>
+					</buildArgs>
+					<metadataRepository>
+						<enabled>true</enabled>
+						<version>0.3.2</version>
+					</metadataRepository>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<image>
+						<name>jayslabs/${project.artifactId}:graalvm-1</name>
+						<builder>paketobuildpacks/builder:tiny</builder>
+						<env>
+							<path>target/accounts-0.0.1-SNAPSHOT.jar</path>
+							<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
+						</env>
+					</image>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
